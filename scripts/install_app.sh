@@ -4,7 +4,17 @@ source functions.sh
 if is_mac; then
     
     echo "PROGRESS:0"
-    sleep 1
+    
+    if [ ! xcode_tools_installed ]; then
+        echo "ALERT:Warning|XCode Tools are not installed"
+        echo "QUITAPP"
+    fi
+    
+    if [ ! homebrew_installed ]; then
+        echo "Homebrew is not installed";
+        echo "ALERT:Warning|Homebrew is not installed"
+        echo "QUITAPP"
+    fi
     
     if no_root; then
         create_root
