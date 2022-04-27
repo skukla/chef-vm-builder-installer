@@ -138,6 +138,11 @@ set_branch() {
     git checkout $1
 }
 
+set_head() {
+    echo "Setting head..."
+    git reset --hard HEAD
+}
+
 stash_user_changes() {
     echo "Saving user changes..."
     git stash
@@ -155,5 +160,5 @@ update_app() {
 
 reapply_user_changes() {
     echo "Re-applying user changes..."
-    git stash apply
+    git stash pop
 }

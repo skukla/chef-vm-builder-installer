@@ -4,7 +4,17 @@ source functions.sh
 if is_mac; then
     
     echo "PROGRESS:0"
-    sleep 1
+    
+    if [ ! xcode_tools_installed ]; then
+        echo "ALERT:Warning|XCode Tools are not installed"
+        echo "QUITAPP"
+    fi
+    
+    if [ ! homebrew_installed ]; then
+        echo "Homebrew is not installed";
+        echo "ALERT:Warning|Homebrew is not installed"
+        echo "QUITAPP"
+    fi
     
     if no_root; then
         create_root
@@ -18,6 +28,7 @@ if is_mac; then
         echo "PROGRESS:60"
         sleep 1
         set_branch beta
+        set_head
         echo "PROGRESS:90"
         sleep 1
     else
@@ -28,6 +39,7 @@ if is_mac; then
         echo "PROGRESS:70"
         sleep 1
         update_app
+        set_head
         echo "PROGRESS:80"
         sleep 1
         reapply_user_changes
