@@ -138,16 +138,6 @@ set_branch() {
     git checkout $1
 }
 
-set_head() {
-    echo "Setting head..."
-    git reset --hard HEAD
-}
-
-stash_user_changes() {
-    echo "Saving user changes..."
-    git stash
-}
-
 install_app() {
     echo "Installing builder..."
     git clone https://github.com/skukla/chef-vm-builder.git $(app_root)
@@ -156,9 +146,4 @@ install_app() {
 update_app() {
     echo "Updating application..."
     git pull
-}
-
-reapply_user_changes() {
-    echo "Re-applying user changes..."
-    git stash pop
 }

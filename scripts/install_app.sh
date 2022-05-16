@@ -28,21 +28,17 @@ if is_mac; then
         echo "PROGRESS:60"
         sleep 1
         set_branch beta
-        set_head
         echo "PROGRESS:90"
         sleep 1
     else
         set_branch beta
         echo "PROGRESS:60"
         sleep 1
-        stash_user_changes
         echo "PROGRESS:70"
         sleep 1
         update_app
-        set_head
         echo "PROGRESS:80"
         sleep 1
-        reapply_user_changes
         echo "PROGRESS:90"
         sleep 1
     fi
