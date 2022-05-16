@@ -27,11 +27,11 @@ if is_mac; then
         install_app
         echo "PROGRESS:60"
         sleep 1
-        set_branch beta
+        set_branch dev
         echo "PROGRESS:90"
         sleep 1
     else
-        set_branch beta
+        set_branch dev
         echo "PROGRESS:60"
         sleep 1
         echo "PROGRESS:70"
