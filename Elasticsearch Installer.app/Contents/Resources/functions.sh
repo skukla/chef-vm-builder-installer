@@ -3,16 +3,24 @@ is_mac() {
     [[ -d /Applications/Safari.app && -d /Users ]]
 }
 
+app_root() {
+    loggedInUser=$(stat -f %Su /dev/console)
+    echo "/Users/$loggedInUser/chef-vm-builder"
+}
+
 xcode_tools_installed() {
-    [[ -d /Library/Developer/CommandLineTools ]]
+    xcode-select -p &> /dev/null
+    [ $? -eq 0 ]
 }
 
 homebrew_installed() {
-    [[ -f /usr/local/bin/brew ]]
+    which -s brew
+    [ $? -eq 0 ]
 }
 
 elasticsearch_installed() {
-    [[ -d /usr/local/var/lib/elasticsearch ]]
+    which -s elasticsearch
+    [ $? -eq 0 ]
 }
 
 elasticsearch_is_running() {
@@ -27,9 +35,18 @@ install_homebrew() {
     HOMEBREW_NO_AUTO_UPDATE=1 brew tap homebrew/services
 }
 
+patch_elasticsearch() {
+    cd /usr/local/Homebrew/Library/Taps/elastic/homebrew-tap
+    git fetch origin pull/144/head:patch-1
+    git checkout patch-1
+}
+
 install_elasticsearch() {
     echo "Adding the Elasticsearch repository..."
     HOMEBREW_NO_AUTO_UPDATE=1 brew tap elastic/tap
+    
+    echo "Patching the Elasticsearch application..."
+    patch_elasticsearch
     
     echo "Installing the Elasticsearch application..."
     HOMEBREW_NO_AUTO_UPDATE=1 brew install elastic/tap/elasticsearch-full
@@ -100,4 +117,42 @@ uninstall_elasticsearch() {
     
     echo "Removing the Elasticsearch repository..."
     HOMEBREW_NO_AUTO_UPDATE=1 brew untap elastic/tap
+}
+
+no_root() {
+    if [ -d $(app_root) ]; then
+        false
+    else
+        true
+    fi
+}
+
+create_root() {
+    echo "Root doesn't exist, creating..."
+    mkdir $(app_root)
+}
+
+root_is_empty() {
+    find $(app_root) -name ".DS_Store" -delete
+    if [ "$(ls -A $(app_root))" ]; then
+        false
+    else
+        true
+    fi
+}
+
+set_branch() {
+    echo "Setting branch to $1..."
+    cd $(app_root)
+    git checkout $1
+}
+
+install_app() {
+    echo "Installing builder..."
+    git clone https://github.com/skukla/chef-vm-builder.git $(app_root)
+}
+
+update_app() {
+    echo "Updating application..."
+    git pull
 }

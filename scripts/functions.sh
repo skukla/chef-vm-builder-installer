@@ -35,9 +35,18 @@ install_homebrew() {
     HOMEBREW_NO_AUTO_UPDATE=1 brew tap homebrew/services
 }
 
+patch_elasticsearch() {
+    cd /usr/local/Homebrew/Library/Taps/elastic/homebrew-tap
+    git fetch origin pull/144/head:patch-1
+    git checkout patch-1
+}
+
 install_elasticsearch() {
     echo "Adding the Elasticsearch repository..."
     HOMEBREW_NO_AUTO_UPDATE=1 brew tap elastic/tap
+    
+    echo "Patching the Elasticsearch application..."
+    patch_elasticsearch
     
     echo "Installing the Elasticsearch application..."
     HOMEBREW_NO_AUTO_UPDATE=1 brew install elastic/tap/elasticsearch-full
