@@ -154,5 +154,7 @@ install_app() {
 
 update_app() {
     echo "Updating application..."
+    git stash
+    git stash drop
     git pull
 }
