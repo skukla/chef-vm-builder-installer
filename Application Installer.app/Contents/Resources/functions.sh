@@ -132,18 +132,37 @@ root_is_empty() {
     fi
 }
 
+install_app() {
+    echo "Installing builder..."
+    git clone https://github.com/skukla/chef-vm-builder.git $(app_root)
+}
+
+drop_user_changes() {
+    echo "Dropping all user changes..."
+    git stash
+    git stash drop
+}
+
 set_branch() {
     echo "Setting branch to $1..."
     cd $(app_root)
     git checkout $1
 }
 
-install_app() {
-    echo "Installing builder..."
-    git clone https://github.com/skukla/chef-vm-builder.git $(app_root)
+update_branch() {
+    echo "Updating $1 branch..."
+    git pull origin
 }
 
 update_app() {
     echo "Updating application..."
-    git pull
+    sleep 1
+    for branch in dev beta master; do
+        set_branch $branch
+        sleep 1
+        drop_user_changes
+        sleep 1
+        update_branch $branch
+        sleep 1
+    done
 }

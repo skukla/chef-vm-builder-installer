@@ -35,18 +35,9 @@ install_homebrew() {
     HOMEBREW_NO_AUTO_UPDATE=1 brew tap homebrew/services
 }
 
-patch_elasticsearch() {
-    cd /usr/local/Homebrew/Library/Taps/elastic/homebrew-tap
-    git fetch origin pull/144/head:patch-1
-    git checkout patch-1
-}
-
 install_elasticsearch() {
     echo "Adding the Elasticsearch repository..."
     HOMEBREW_NO_AUTO_UPDATE=1 brew tap elastic/tap
-    
-    echo "Patching the Elasticsearch application..."
-    patch_elasticsearch
     
     echo "Installing the Elasticsearch application..."
     HOMEBREW_NO_AUTO_UPDATE=1 brew install elastic/tap/elasticsearch-full
@@ -141,20 +132,37 @@ root_is_empty() {
     fi
 }
 
+install_app() {
+    echo "Installing builder..."
+    git clone https://github.com/skukla/chef-vm-builder.git $(app_root)
+}
+
+drop_user_changes() {
+    echo "Dropping all user changes..."
+    git stash
+    git stash drop
+}
+
 set_branch() {
     echo "Setting branch to $1..."
     cd $(app_root)
     git checkout $1
 }
 
-install_app() {
-    echo "Installing builder..."
-    git clone https://github.com/skukla/chef-vm-builder.git $(app_root)
+update_branch() {
+    echo "Updating $1 branch..."
+    git pull origin
 }
 
 update_app() {
     echo "Updating application..."
-    git stash
-    git stash drop
-    git pull
+    sleep 1
+    for branch in dev beta master; do
+        set_branch $branch
+        sleep 1
+        drop_user_changes
+        sleep 1
+        update_branch $branch
+        sleep 1
+    done
 }
