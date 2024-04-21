@@ -151,7 +151,7 @@ set_branch() {
 
 update_branch() {
     echo "Updating $1 branch..."
-    git pull origin
+    git pull --rebase=true origin
 }
 
 update_app() {
